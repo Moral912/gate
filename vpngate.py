@@ -407,7 +407,7 @@ def build_outputs(results, raw_count, sstp_count, source):
     return data
 
 
-CHAIN_URL = os.environ.get("CHAIN_URL", "https://jerylihub.github.io/gate/chains.txt")
+CHAIN_URL = os.environ.get("CHAIN_URL", "https://Moral912.github.io/gate/chains.txt")
 
 
 def build_chains_text(data):
@@ -460,17 +460,16 @@ EDGE_HOSTS = [
     h.strip()
     for h in os.environ.get(
         "EDGE_HOSTS",
-         "104.29.111.51:443,108.162.198.225:443,162.159.237.251:443,198.41.219.80:443,"
-         "172.67.68.4:443,104.26.3.226:443,162.159.151.172:443,104.26.4.106:443,"
-         "162.159.147.137:443,172.65.236.230:443,172.67.72.130:443,104.26.1.117:443,"
-         "162.159.155.193:443,172.67.70.62:443,104.20.21.36:443,162.159.128.223:443,"
+        "104.29.111.51:443,108.162.198.225:443,162.159.237.251:443,198.41.219.80:443,"
+        "172.67.68.4:443,104.26.3.226:443,162.159.151.172:443,104.26.4.106:443,"
+        "162.159.147.137:443,172.65.236.230:443,172.67.72.130:443,104.26.1.117:443,"
+        "162.159.155.193:443,172.67.70.62:443,104.20.21.36:443,162.159.128.223:443,"
         "162.159.130.212:443,162.159.156.100:443,162.159.158.128:443,172.67.78.34:443",
-        
     ).split(",")
     if h.strip()
 ]
 
- HOSTS_URL = os.environ.get("HOSTS_URL", "https://jerylihub.github.io/gate/hosts.txt")
+HOSTS_URL = os.environ.get("HOSTS_URL", "https://Moral912.github.io/gate/hosts.txt")
 
 def build_hosts_text(data):
     """生成可直接粘贴到 edgetunnel 后台「自定义优选IP」框的清单。
@@ -528,7 +527,7 @@ def build_hosts_text(data):
 EDT_UUID = os.environ.get("EDT_UUID", "e60f9f89-b1dd-4ced-9281-c7ad5929ebcc")
 EDT_DOMAIN = os.environ.get("EDT_DOMAIN", "edgetunnel.relyon.indevs.in")
 EDT_FINGERPRINT = os.environ.get("EDT_FINGERPRINT", "chrome")
-SUB_URL = os.environ.get("SUB_URL", "https://jerylihub.github.io/gate/sub.txt")
+SUB_URL = os.environ.get("SUB_URL", "https://Moral912.github.io/gate/sub.txt")
 
 
 def _b64_secret_encode(plaintext, secret):
