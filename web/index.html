@@ -6,40 +6,50 @@
 <title>VPN Gate SSTP 节点检测</title>
 <style>
   :root {
-    --bg: #0b1120; --panel: #111a2e; --panel2: #16233c; --border: #243450;
-    --text: #dbe7ff; --muted: #7f93b8; --accent: #4cc2ff; --ok: #2fd08a;
-    --res: #b48cff; --dc: #ffb84d; --unk: #8a9bb5;
+    --bg: #f8fafc;        /* 页面底色：高雅浅白灰 */
+    --panel: #ffffff;     /* 卡片底色：纯白 */
+    --panel2: #f1f5f9;    /* 表头/次级面板底色 */
+    --border: #e2e8f0;    /* 边框：浅灰 */
+    --text: #0f172a;      /* 正文文字：深蓝灰，清晰锐利 */
+    --muted: #64748b;     /* 说明文字：石板灰 */
+    --accent: #2563eb;    /* 强调/高亮：科技蓝 */
+    --ok: #16a34a;        /* 存活/低延迟：翠绿 */
+    --res: #7c3aed;       /* 住宅宽带：优雅紫 */
+    --dc: #d97706;        /* 机房中继：琥珀橙 */
+    --unk: #64748b;       /* 未知：中性灰 */
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif; min-height: 100vh; padding: 20px; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif; min-height: 100vh; padding: 24px; line-height: 1.5; }
   .wrap { max-width: 1100px; margin: 0 auto; }
-  h1 { font-size: 22px; margin-bottom: 4px; }
-  .sub { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
-  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
-  .card .k { color: var(--muted); font-size: 12px; }
-  .card .v { font-size: 24px; font-weight: 700; margin-top: 4px; }
+  h1 { font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 6px; letter-spacing: -0.5px; }
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: box-shadow .2s; }
+  .card:hover { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07); }
+  .card .k { color: var(--muted); font-size: 12px; font-weight: 500; }
+  .card .v { font-size: 26px; font-weight: 700; color: #0f172a; margin-top: 4px; }
   .bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; align-items: center; }
-  .pill { background: var(--panel2); border: 1px solid var(--border); color: var(--text); border-radius: 999px; padding: 6px 14px; font-size: 13px; cursor: pointer; user-select: none; }
-  .pill.on { border-color: var(--accent); color: var(--accent); }
-  .legend { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
-  .country { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 14px; overflow: hidden; }
-  .country .head { display: flex; justify-content: space-between; padding: 12px 16px; background: var(--panel2); font-weight: 600; cursor: pointer; flex-wrap: wrap; gap: 6px; }
+  .pill { background: var(--panel); border: 1px solid var(--border); color: var(--muted); border-radius: 999px; padding: 6px 16px; font-size: 13px; cursor: pointer; user-select: none; transition: all .15s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  .pill:hover { border-color: var(--accent); color: var(--accent); }
+  .pill.on { background: #eff6ff; border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .legend { color: var(--muted); font-size: 12px; margin-bottom: 16px; }
+  .country { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .country .head { display: flex; justify-content: space-between; padding: 14px 18px; background: var(--panel2); font-weight: 600; cursor: pointer; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid var(--border); user-select: none; }
   .country .head .tag { font-size: 12px; color: var(--muted); font-weight: 400; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { padding: 9px 12px; text-align: left; border-top: 1px solid var(--border); }
-  th { color: var(--muted); font-weight: 500; font-size: 12px; }
-  tr:hover td { background: rgba(76,194,255,.05); }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; }
-  .b-res { background: rgba(180,140,255,.15); color: var(--res); }
-  .b-dc { background: rgba(255,184,77,.15); color: var(--dc); }
-  .b-unk { background: rgba(138,155,181,.15); color: var(--unk); }
-  .lat { color: var(--ok); }
-  code { background: var(--panel2); padding: 2px 6px; border-radius: 5px; font-size: 12px; cursor: pointer; }
-  code:hover { outline: 1px solid var(--accent); }
-  .empty { color: var(--muted); padding: 30px; text-align: center; }
-  .footer { color: var(--muted); font-size: 12px; margin-top: 20px; text-align: center; }
-  @media (max-width: 700px) { th, td { padding: 7px 8px; } .hide-m { display: none; } }
+  th, td { padding: 11px 14px; text-align: left; border-top: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; background: #fafafa; }
+  tr:hover td { background: #f8fafc; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 500; }
+  .b-res { background: #ede9fe; color: var(--res); }
+  .b-dc { background: #fef3c7; color: var(--dc); }
+  .b-unk { background: #f1f5f9; color: var(--unk); }
+  .lat { color: var(--ok); font-weight: 600; }
+  code { background: #f1f5f9; border: 1px solid var(--border); color: #0f172a; padding: 3px 7px; border-radius: 5px; font-size: 12px; cursor: pointer; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; transition: all .15s ease; }
+  code:hover { background: #eff6ff; border-color: var(--accent); color: var(--accent); }
+  .empty { color: var(--muted); padding: 36px; text-align: center; }
+  .footer { color: var(--muted); font-size: 12px; margin-top: 24px; text-align: center; }
+  @media (max-width: 700px) { th, td { padding: 8px 10px; } .hide-m { display: none; } }
 </style>
 </head>
 <body>
@@ -120,7 +130,7 @@ function renderCountries() {
     const name = x[0], g = x[1];
     return '<div class="country">' +
       '<div class="head" onclick="this.parentElement.classList.toggle(\'open\')">' +
-        '<span>🌏 ' + name + ' <span class="tag">' + (g.code || "") + '</span></span>' +
+        '<span>🌐 ' + name + ' <span class="tag">' + (g.code || "") + '</span></span>' +
         '<span class="tag">' + g.count + ' 个节点 · 住宅 ' + g.residential + ' · 机房 ' + g.datacenter + '</span>' +
       '</div>' +
       '<table><thead><tr><th>Host:Port</th><th class="hide-m">国码</th><th>协议</th><th>延迟</th><th class="hide-m">出口</th><th>类型</th><th class="hide-m">检测日期</th></tr></thead>' +
