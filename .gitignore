@@ -1,4 +1,5 @@
-# 由 vpngate.py 运行时生成 (data.json + index.html), 不入库
-public/
+# 本地虚拟环境 / 推送凭证 / 缓存（不入库）
+.venv/
+.git_token
 __pycache__/
 *.pyc
