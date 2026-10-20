@@ -3,7 +3,7 @@ name: VPN Gate Node Check
 on:
   workflow_dispatch:
   schedule:
-    - cron: '15 */2 * * *' # 每 24小时： 0 0 * * * 。 30分钟：*/30 * * * * 。60分钟：0 * * * * 。12小时：0 */12 * * * 。 2小时：0 */2 * * * 。4小时：0 */4 * * *
+    - cron: '37 */2 * * *'  # 每 2 小时的第 37 分钟执行（奇数分钟避开整点/整刻全球拥堵）
 
 permissions:
   contents: read
