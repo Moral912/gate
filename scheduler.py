@@ -26,6 +26,9 @@ CHECK_WORKER = os.environ.get(
 TARGET_MINUTE = 37
 TARGET_HOUR_STEP = 2  # 每 2 小时
 
+# git push 到 github.com 必须走本地代理（直连会被重置）
+GIT_PROXY = os.environ.get("GIT_PROXY", "http://127.0.0.1:10808")
+
 
 def next_run_time(now: datetime) -> datetime:
     """返回下一个目标运行时刻（本地时间，精确到 37 分 0 秒）。"""
@@ -42,6 +45,11 @@ def git_push():
     git = "git"
     env = dict(os.environ)
     env["GIT_TERMINAL_PROMPT"] = "0"
+    # 走本地代理，否则 github.com 直连会被重置（Empty reply from server）
+    for k in ("HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"):
+        env[k] = GIT_PROXY
+    env.pop("NO_PROXY", None)
+    env.pop("no_proxy", None)
 
     token = ""
     token_file = os.path.join(BASE_DIR, ".git_token")
@@ -66,6 +74,16 @@ def git_push():
         "commit", "-m", f"update nodes {datetime.now():%Y%m%d-%H%M}",
     ])
     r = run([git, "push", push_url, "HEAD:main"])
+    # 失败时重试 2 次（网络抖动/代理未就绪）
+    for attempt in range(1, 3):
+        if r.returncode == 0:
+            break
+        print(
+            f"[{datetime.now():%Y-%m-%d %H:%M:%S}] push 失败, 第 {attempt} 次重试...",
+            flush=True,
+        )
+        time.sleep(10)
+        r = run([git, "push", push_url, "HEAD:main"])
     print(
         f"[{datetime.now():%Y-%m-%d %H:%M:%S}] git push 返回码={r.returncode}",
         flush=True,
